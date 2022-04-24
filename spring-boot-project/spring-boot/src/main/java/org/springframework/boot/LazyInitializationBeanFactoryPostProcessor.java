@@ -44,14 +44,24 @@ import org.springframework.core.Ordered;
  * @author Phillip Webb
  * @since 2.2.0
  * @see LazyInitializationExcludeFilter
+ *
+ * 懒加载 BeanFactoryPostProcessor 后置处理器
  */
 public final class LazyInitializationBeanFactoryPostProcessor implements BeanFactoryPostProcessor, Ordered {
 
+	/**
+	 * 后置处理懒加载
+	 * @param beanFactory bean 工厂
+	 * @throws BeansException
+	 */
 	@Override
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+		// 获取所有懒加载排除过滤器
 		Collection<LazyInitializationExcludeFilter> filters = getFilters(beanFactory);
+		// 遍历所有的 BeanDefinition
 		for (String beanName : beanFactory.getBeanDefinitionNames()) {
 			BeanDefinition beanDefinition = beanFactory.getBeanDefinition(beanName);
+			// 如果 AbstractBeanDefinition，则进入处理
 			if (beanDefinition instanceof AbstractBeanDefinition) {
 				postProcess(beanFactory, filters, beanName, (AbstractBeanDefinition) beanDefinition);
 			}
@@ -66,14 +76,25 @@ public final class LazyInitializationBeanFactoryPostProcessor implements BeanFac
 		return filters;
 	}
 
+	/**
+	 * 后置处理 bean
+	 * @param beanFactory bean 工厂
+	 * @param filters 过滤器
+	 * @param beanName beanName
+	 * @param beanDefinition beanDefinition
+	 */
 	private void postProcess(ConfigurableListableBeanFactory beanFactory,
 			Collection<LazyInitializationExcludeFilter> filters, String beanName,
 			AbstractBeanDefinition beanDefinition) {
+		// 获取 bean 中定义的 lazyInit
 		Boolean lazyInit = beanDefinition.getLazyInit();
+		// 如果不为空，直接返回
 		if (lazyInit != null) {
 			return;
 		}
+		// 获取 bean 类型
 		Class<?> beanType = getBeanType(beanFactory, beanName);
+		// 未排除，设置懒加载
 		if (!isExcluded(filters, beanName, beanDefinition, beanType)) {
 			beanDefinition.setLazyInit(true);
 		}

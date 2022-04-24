@@ -53,6 +53,8 @@ import org.springframework.util.Assert;
  * @author Brian Clozel
  * @author Kristine Jetzke
  * @since 2.0.0
+ *
+ * Tomcat web server
  */
 public class TomcatWebServer implements WebServer {
 
@@ -95,17 +97,25 @@ public class TomcatWebServer implements WebServer {
 	 * @param autoStart if the server should be started
 	 * @param shutdown type of shutdown supported by the server
 	 * @since 2.3.0
+	 *
+	 * 创建 TomcatWebServer
 	 */
 	public TomcatWebServer(Tomcat tomcat, boolean autoStart, Shutdown shutdown) {
 		Assert.notNull(tomcat, "Tomcat Server must not be null");
 		this.tomcat = tomcat;
 		this.autoStart = autoStart;
 		this.gracefulShutdown = (shutdown == Shutdown.GRACEFUL) ? new GracefulShutdown(tomcat) : null;
+		// 初始化
 		initialize();
 	}
 
+	/**
+	 * 初始化 TomcatWebServer
+	 * @throws WebServerException
+	 */
 	private void initialize() throws WebServerException {
 		logger.info("Tomcat initialized with port(s): " + getPortsDescription(false));
+		// 加锁同步
 		synchronized (this.monitor) {
 			try {
 				addInstanceIdToEngineName();
@@ -120,6 +130,7 @@ public class TomcatWebServer implements WebServer {
 				});
 
 				// Start the server to trigger initialization listeners
+				// 启动 tomcat
 				this.tomcat.start();
 
 				// We can re-throw failure exception directly in the main thread

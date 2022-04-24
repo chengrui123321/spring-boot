@@ -24,6 +24,8 @@ import java.util.Set;
  *
  * @author Phillip Webb
  * @since 1.3.0
+ *
+ * 提供访问 {@link SpringApplication} 运行的参数
  */
 public interface ApplicationArguments {
 

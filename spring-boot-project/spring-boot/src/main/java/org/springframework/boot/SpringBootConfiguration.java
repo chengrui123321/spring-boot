@@ -40,10 +40,13 @@ import org.springframework.stereotype.Indexed;
  * @author Phillip Webb
  * @author Andy Wilkinson
  * @since 1.4.0
+ *
+ * 标记一个类是 spring 配置类
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
+// 配置类
 @Configuration
 @Indexed
 public @interface SpringBootConfiguration {

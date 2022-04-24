@@ -74,18 +74,24 @@ import org.springframework.core.io.support.SpringFactoriesLoader;
  * @see ConditionalOnClass
  * @see AutoConfigureAfter
  * @see SpringBootApplication
+ *
+ * 自动配置注解
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
+// 自动扫描的包
 @AutoConfigurationPackage
+// 导入 AutoConfigurationImportSelector，指定需要加载的 bean
 @Import(AutoConfigurationImportSelector.class)
 public @interface EnableAutoConfiguration {
 
 	/**
 	 * Environment property that can be used to override when auto-configuration is
 	 * enabled.
+	 *
+	 * 开启自动配置 key
 	 */
 	String ENABLED_OVERRIDE_PROPERTY = "spring.boot.enableautoconfiguration";
 

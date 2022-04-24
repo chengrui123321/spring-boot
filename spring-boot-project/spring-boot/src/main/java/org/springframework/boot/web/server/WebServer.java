@@ -24,6 +24,8 @@ package org.springframework.boot.web.server;
  * @author Phillip Webb
  * @author Dave Syer
  * @since 2.0.0
+ *
+ * web 服务(Tomcat、Jetty等)
  */
 public interface WebServer {
 
@@ -31,6 +33,8 @@ public interface WebServer {
 	 * Starts the web server. Calling this method on an already started server has no
 	 * effect.
 	 * @throws WebServerException if the server cannot be started
+	 *
+	 * 启动 web 服务
 	 */
 	void start() throws WebServerException;
 
@@ -38,12 +42,16 @@ public interface WebServer {
 	 * Stops the web server. Calling this method on an already stopped server has no
 	 * effect.
 	 * @throws WebServerException if the server cannot be stopped
+	 *
+	 * 停止
 	 */
 	void stop() throws WebServerException;
 
 	/**
 	 * Return the port this server is listening on.
 	 * @return the port (or -1 if none)
+	 *
+	 * 获取 端口
 	 */
 	int getPort();
 
@@ -56,6 +64,8 @@ public interface WebServer {
 	 * shutdown.
 	 * @param callback the callback to invoke when the graceful shutdown completes
 	 * @since 2.3.0
+	 *
+	 * 优雅关闭
 	 */
 	default void shutDownGracefully(GracefulShutdownCallback callback) {
 		callback.shutdownComplete(GracefulShutdownResult.IMMEDIATE);

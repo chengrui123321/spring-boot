@@ -42,6 +42,8 @@ import org.springframework.beans.factory.support.AbstractBeanDefinition;
  * @author Tyler Van Gorder
  * @author Philip Webb
  * @since 2.2.0
+ *
+ * 懒加载初始化排除过滤器
  */
 @FunctionalInterface
 public interface LazyInitializationExcludeFilter {

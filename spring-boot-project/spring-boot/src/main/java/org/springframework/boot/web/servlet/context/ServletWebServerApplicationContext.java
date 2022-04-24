@@ -91,6 +91,8 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
  * @see AnnotationConfigServletWebServerApplicationContext
  * @see XmlServletWebServerApplicationContext
  * @see ServletWebServerFactory
+ *
+ * ServletWebServerApplicationContext 基于 servlet 的 web 容器
  */
 public class ServletWebServerApplicationContext extends GenericWebApplicationContext
 		implements ConfigurableWebServerApplicationContext {
@@ -105,6 +107,9 @@ public class ServletWebServerApplicationContext extends GenericWebApplicationCon
 	 */
 	public static final String DISPATCHER_SERVLET_NAME = "dispatcherServlet";
 
+	/**
+	 * web server
+	 */
 	private volatile WebServer webServer;
 
 	private ServletConfig servletConfig;
@@ -151,10 +156,14 @@ public class ServletWebServerApplicationContext extends GenericWebApplicationCon
 		}
 	}
 
+	/**
+	 * 刷新
+	 */
 	@Override
 	protected void onRefresh() {
 		super.onRefresh();
 		try {
+			// 创建 web 服务器，并配置、启动
 			createWebServer();
 		}
 		catch (Throwable ex) {
@@ -170,14 +179,23 @@ public class ServletWebServerApplicationContext extends GenericWebApplicationCon
 		super.doClose();
 	}
 
+	/**
+	 * 创建 web 服务器
+	 */
 	private void createWebServer() {
 		WebServer webServer = this.webServer;
+		// 获取 ServletContext
 		ServletContext servletContext = getServletContext();
+		// 如果 web 服务为空，并且 ServletContext 为空
 		if (webServer == null && servletContext == null) {
+			// 1. 获取 ServletWebServerFactory
 			ServletWebServerFactory factory = getWebServerFactory();
+			// 2. 获取 web server, 并配置 启动
 			this.webServer = factory.getWebServer(getSelfInitializer());
+			// 注册 webServerGracefulShutdown
 			getBeanFactory().registerSingleton("webServerGracefulShutdown",
 					new WebServerGracefulShutdownLifecycle(this.webServer));
+			// 注册 webServerGracefulShutdown
 			getBeanFactory().registerSingleton("webServerStartStop",
 					new WebServerStartStopLifecycle(this, this.webServer));
 		}
@@ -197,18 +215,24 @@ public class ServletWebServerApplicationContext extends GenericWebApplicationCon
 	 * embedded {@link WebServer}. By default this method searches for a suitable bean in
 	 * the context itself.
 	 * @return a {@link ServletWebServerFactory} (never {@code null})
+	 *
+	 * 获取 ServletWebServerFactory， 用于创建 {@link WebServer}
 	 */
 	protected ServletWebServerFactory getWebServerFactory() {
 		// Use bean names so that we don't consider the hierarchy
+		// 从容器中获取 ServletWebServerFactory bean 名称
 		String[] beanNames = getBeanFactory().getBeanNamesForType(ServletWebServerFactory.class);
+		// 如果没有，抛异常
 		if (beanNames.length == 0) {
 			throw new ApplicationContextException("Unable to start ServletWebServerApplicationContext due to missing "
 					+ "ServletWebServerFactory bean.");
 		}
+		// 如果容器中多于 1 个，抛异常
 		if (beanNames.length > 1) {
 			throw new ApplicationContextException("Unable to start ServletWebServerApplicationContext due to multiple "
 					+ "ServletWebServerFactory beans : " + StringUtils.arrayToCommaDelimitedString(beanNames));
 		}
+		// 获取容器中 ServletWebServerFactory bean
 		return getBeanFactory().getBean(beanNames[0], ServletWebServerFactory.class);
 	}
 

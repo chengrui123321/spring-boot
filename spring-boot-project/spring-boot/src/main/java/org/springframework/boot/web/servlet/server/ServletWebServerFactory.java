@@ -25,6 +25,8 @@ import org.springframework.boot.web.servlet.ServletContextInitializer;
  * @author Phillip Webb
  * @see WebServer
  * @since 2.0.0
+ *
+ * 嵌入式 servlet web 容器工厂，用于创建指定的 {@link WebServer}
  */
 @FunctionalInterface
 public interface ServletWebServerFactory {
@@ -38,6 +40,8 @@ public interface ServletWebServerFactory {
 	 * the server starts
 	 * @return a fully configured and started {@link WebServer}
 	 * @see WebServer#stop()
+	 *
+	 * 获取一个配置好的 web server
 	 */
 	WebServer getWebServer(ServletContextInitializer... initializers);
 

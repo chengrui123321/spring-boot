@@ -24,24 +24,32 @@ import org.springframework.util.ClassUtils;
  * @author Andy Wilkinson
  * @author Brian Clozel
  * @since 2.0.0
+ *
+ * 应用程序类型
  */
 public enum WebApplicationType {
 
 	/**
 	 * The application should not run as a web application and should not start an
 	 * embedded web server.
+	 *
+	 * 不是任何 web 应用程序，并且不以嵌入式 servlet 容器运行
 	 */
 	NONE,
 
 	/**
 	 * The application should run as a servlet-based web application and should start an
 	 * embedded servlet web server.
+	 *
+	 * servlet 容器(阻塞)
 	 */
 	SERVLET,
 
 	/**
 	 * The application should run as a reactive web application and should start an
 	 * embedded reactive web server.
+	 *
+	 * reactive 容器(非阻塞)
 	 */
 	REACTIVE;
 
@@ -58,16 +66,23 @@ public enum WebApplicationType {
 
 	private static final String REACTIVE_APPLICATION_CONTEXT_CLASS = "org.springframework.boot.web.reactive.context.ReactiveWebApplicationContext";
 
+	/**
+	 * 判断按照哪种 web 容器启动
+	 * @return
+	 */
 	static WebApplicationType deduceFromClasspath() {
+		// 如果环境中有 DispatcherHandler，则按照 REACTIVE 方式
 		if (ClassUtils.isPresent(WEBFLUX_INDICATOR_CLASS, null) && !ClassUtils.isPresent(WEBMVC_INDICATOR_CLASS, null)
 				&& !ClassUtils.isPresent(JERSEY_INDICATOR_CLASS, null)) {
 			return WebApplicationType.REACTIVE;
 		}
+		// 如果环境中没有 Servlet 并且没有 ConfigurableWebApplicationContext，则按照 NONE 方式
 		for (String className : SERVLET_INDICATOR_CLASSES) {
 			if (!ClassUtils.isPresent(className, null)) {
 				return WebApplicationType.NONE;
 			}
 		}
+		// 否则按照 SERVLET 方式
 		return WebApplicationType.SERVLET;
 	}
 

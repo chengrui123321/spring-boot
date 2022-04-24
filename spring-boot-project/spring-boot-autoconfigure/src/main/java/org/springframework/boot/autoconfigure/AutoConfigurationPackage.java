@@ -33,11 +33,14 @@ import org.springframework.context.annotation.Import;
  * @author Phillip Webb
  * @since 1.3.0
  * @see AutoConfigurationPackages
+ *
+ * 自动扫描的包注解，如果没有指定 {@link #basePackages} 或者 {@link #basePackageClasses()}, 则默认扫描的包为当前注解所在类的包
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
+// 导入 AutoConfigurationPackages.Registrar，指定需要自动配置的包
 @Import(AutoConfigurationPackages.Registrar.class)
 public @interface AutoConfigurationPackage {
 
@@ -48,6 +51,8 @@ public @interface AutoConfigurationPackage {
 	 * names.
 	 * @return the back package names
 	 * @since 2.3.0
+	 *
+	 * 扫描配置的基础包
 	 */
 	String[] basePackages() default {};
 

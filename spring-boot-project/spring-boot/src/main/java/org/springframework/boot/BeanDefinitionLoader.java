@@ -54,15 +54,26 @@ import org.springframework.util.StringUtils;
  * @author Phillip Webb
  * @author Vladislav Kisel
  * @see #setBeanNameGenerator(BeanNameGenerator)
+ *
+ * 用于加载 BeanDefinition, 从 XML、Java配置类中
  */
 class BeanDefinitionLoader {
 
 	private final Object[] sources;
 
+	/**
+	 * 注解方式 BeanDefinitionReader
+	 */
 	private final AnnotatedBeanDefinitionReader annotatedReader;
 
+	/**
+	 * XmlBeanDefinitionReader
+	 */
 	private final XmlBeanDefinitionReader xmlReader;
 
+	/**
+	 * BeanDefinitionReader
+	 */
 	private BeanDefinitionReader groovyReader;
 
 	private final ClassPathBeanDefinitionScanner scanner;
@@ -121,6 +132,8 @@ class BeanDefinitionLoader {
 	/**
 	 * Load the sources into the reader.
 	 * @return the number of loaded beans
+	 *
+	 * 加载资源到
 	 */
 	int load() {
 		int count = 0;
@@ -130,8 +143,14 @@ class BeanDefinitionLoader {
 		return count;
 	}
 
+	/**
+	 * 加载 bean
+	 * @param source 文件(xml、package、javaConfig)
+	 * @return
+	 */
 	private int load(Object source) {
 		Assert.notNull(source, "Source must not be null");
+		// 按照资源类型进行加载
 		if (source instanceof Class<?>) {
 			return load((Class<?>) source);
 		}
@@ -147,13 +166,20 @@ class BeanDefinitionLoader {
 		throw new IllegalArgumentException("Invalid source type " + source.getClass());
 	}
 
+	/**
+	 * 加载 JavaConfig中 bean
+	 * @param source
+	 * @return
+	 */
 	private int load(Class<?> source) {
 		if (isGroovyPresent() && GroovyBeanDefinitionSource.class.isAssignableFrom(source)) {
 			// Any GroovyLoaders added in beans{} DSL can contribute beans here
 			GroovyBeanDefinitionSource loader = BeanUtils.instantiateClass(source, GroovyBeanDefinitionSource.class);
 			load(loader);
 		}
+		// 校验通过
 		if (isEligible(source)) {
+			// 注册
 			this.annotatedReader.register(source);
 			return 1;
 		}
@@ -278,8 +304,11 @@ class BeanDefinitionLoader {
 	 * @param type candidate bean type
 	 * @return true if the given bean type is eligible for registration, i.e. not a groovy
 	 * closure nor an anonymous class
+	 *
+	 * 校验 bean 是否满足加载条件
 	 */
 	private boolean isEligible(Class<?> type) {
+		// 不是匿名类，并且不是 Groovy，并且有无参构造器
 		return !(type.isAnonymousClass() || isGroovyClosure(type) || hasNoConstructors(type));
 	}
 

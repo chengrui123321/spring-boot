@@ -97,6 +97,8 @@ import org.springframework.util.StringUtils;
  * @see #setPort(int)
  * @see #setContextLifecycleListeners(Collection)
  * @see TomcatWebServer
+ *
+ * 创建 TomcatWebServer
  */
 public class TomcatServletWebServerFactory extends AbstractServletWebServerFactory
 		implements ConfigurableTomcatWebServerFactory, ResourceLoaderAware {
@@ -171,14 +173,23 @@ public class TomcatServletWebServerFactory extends AbstractServletWebServerFacto
 				: new ArrayList<>();
 	}
 
+	/**
+	 * 创建 TomcatWebServer
+	 * @param initializers {@link ServletContextInitializer}s that should be applied as
+	 * the server starts
+	 * @return
+	 */
 	@Override
 	public WebServer getWebServer(ServletContextInitializer... initializers) {
 		if (this.disableMBeanRegistry) {
 			Registry.disableRegistry();
 		}
+		// 创建 Tomcat 对象
 		Tomcat tomcat = new Tomcat();
+		// 配置 tomcat 信息
 		File baseDir = (this.baseDirectory != null) ? this.baseDirectory : createTempDir("tomcat");
 		tomcat.setBaseDir(baseDir.getAbsolutePath());
+		// 连接器
 		Connector connector = new Connector(this.protocol);
 		connector.setThrowOnFailure(true);
 		tomcat.getService().addConnector(connector);
@@ -190,6 +201,7 @@ public class TomcatServletWebServerFactory extends AbstractServletWebServerFacto
 			tomcat.getService().addConnector(additionalConnector);
 		}
 		prepareContext(tomcat.getHost(), initializers);
+		// 返回 TomcatWebServer
 		return getTomcatWebServer(tomcat);
 	}
 
@@ -435,6 +447,8 @@ public class TomcatServletWebServerFactory extends AbstractServletWebServerFacto
 	 * additional processing to the Tomcat server.
 	 * @param tomcat the Tomcat server.
 	 * @return a new {@link TomcatWebServer} instance
+	 *
+	 * 创建 TomcatWebServer
 	 */
 	protected TomcatWebServer getTomcatWebServer(Tomcat tomcat) {
 		return new TomcatWebServer(tomcat, getPort() >= 0, getShutdown());

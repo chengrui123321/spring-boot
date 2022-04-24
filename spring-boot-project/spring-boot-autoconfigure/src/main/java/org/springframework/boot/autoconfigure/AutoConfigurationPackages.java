@@ -47,6 +47,8 @@ import org.springframework.util.StringUtils;
  * @author Dave Syer
  * @author Oliver Gierke
  * @since 1.0.0
+ *
+ * 自动配置包
  */
 public abstract class AutoConfigurationPackages {
 
@@ -89,6 +91,8 @@ public abstract class AutoConfigurationPackages {
 	 * configuration class or classes.
 	 * @param registry the bean definition registry
 	 * @param packageNames the package names to set
+	 *
+	 * 注册 bean, 指定包名
 	 */
 	public static void register(BeanDefinitionRegistry registry, String... packageNames) {
 		if (registry.containsBeanDefinition(BEAN)) {
@@ -116,11 +120,19 @@ public abstract class AutoConfigurationPackages {
 	/**
 	 * {@link ImportBeanDefinitionRegistrar} to store the base package from the importing
 	 * configuration.
+	 *
+	 * {@link Registrar} 用于存储配置的包
 	 */
 	static class Registrar implements ImportBeanDefinitionRegistrar, DeterminableImports {
 
+		/**
+		 * 注册 BeanDefinition
+		 * @param metadata 注解元数据
+		 * @param registry BeanDefinitionRegistry
+		 */
 		@Override
 		public void registerBeanDefinitions(AnnotationMetadata metadata, BeanDefinitionRegistry registry) {
+			// 包装指定包名，将指定包下配置加载到 容器中
 			register(registry, new PackageImports(metadata).getPackageNames().toArray(new String[0]));
 		}
 
@@ -133,15 +145,22 @@ public abstract class AutoConfigurationPackages {
 
 	/**
 	 * Wrapper for a package import.
+	 *
+	 * 导入包包装类
 	 */
 	private static final class PackageImports {
 
+		/**
+		 * 需要导入配置的包集合
+		 */
 		private final List<String> packageNames;
 
 		PackageImports(AnnotationMetadata metadata) {
+			// 获取注解树形
 			AnnotationAttributes attributes = AnnotationAttributes
 					.fromMap(metadata.getAnnotationAttributes(AutoConfigurationPackage.class.getName(), false));
 			List<String> packageNames = new ArrayList<>();
+			// 添加包名
 			for (String basePackage : attributes.getStringArray("basePackages")) {
 				packageNames.add(basePackage);
 			}

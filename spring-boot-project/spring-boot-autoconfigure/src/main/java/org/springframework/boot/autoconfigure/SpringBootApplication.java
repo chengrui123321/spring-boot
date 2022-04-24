@@ -47,13 +47,18 @@ import org.springframework.data.repository.Repository;
  * @author Stephane Nicoll
  * @author Andy Wilkinson
  * @since 1.2.0
+ *
+ * SpringApplication 主程序注解，声明了一个配置类、加载 {@link EnableAutoConfiguration} 注解标记的自动配置类及 ComponentScan 注解扫描的 bean
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
+// 标记为配置类
 @SpringBootConfiguration
+// 开启自动配置功能
 @EnableAutoConfiguration
+// 扫描 bean
 @ComponentScan(excludeFilters = { @Filter(type = FilterType.CUSTOM, classes = TypeExcludeFilter.class),
 		@Filter(type = FilterType.CUSTOM, classes = AutoConfigurationExcludeFilter.class) })
 public @interface SpringBootApplication {
