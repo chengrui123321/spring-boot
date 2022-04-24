@@ -32,6 +32,9 @@ import org.springframework.core.Ordered;
  * @author Phillip Webb
  * @author Dave Syer
  * @since 1.5.0
+ *
+ * 配置解析自动配置类，主要是为了 {@link PropertySourcesPlaceholderConfigurer}
+ * {@link PropertySourcesPlaceholderConfigurer} 主要是解析配置文件占位符
  */
 @Configuration(proxyBeanMethods = false)
 @AutoConfigureOrder(Ordered.HIGHEST_PRECEDENCE)
