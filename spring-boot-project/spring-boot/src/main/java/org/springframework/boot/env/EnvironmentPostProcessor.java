@@ -36,6 +36,8 @@ import org.springframework.core.env.Environment;
  * @author Andy Wilkinson
  * @author Stephane Nicoll
  * @since 1.3.0
+ *
+ * 允许对指定环境后置处理，实现类必须在 META-INF/spring.factories 中进行指定注册
  */
 @FunctionalInterface
 public interface EnvironmentPostProcessor {
@@ -44,6 +46,7 @@ public interface EnvironmentPostProcessor {
 	 * Post-process the given {@code environment}.
 	 * @param environment the environment to post-process
 	 * @param application the application to which the environment belongs
+	 * 在指定 environment 后置处理
 	 */
 	void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application);
 

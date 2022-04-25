@@ -24,6 +24,8 @@ import org.springframework.context.ApplicationEvent;
  *
  * @author Phillip Webb
  * @since 1.0.0
+ *
+ * {@link SpringApplication} 的事件基类
  */
 @SuppressWarnings("serial")
 public abstract class SpringApplicationEvent extends ApplicationEvent {

@@ -46,6 +46,8 @@ import org.springframework.util.ErrorHandler;
  * @author Artsiom Yudovin
  * @author Brian Clozel
  * @since 1.0.0
+ *
+ * 发布 SpringApplicationEvent 事件
  */
 public class EventPublishingRunListener implements SpringApplicationRunListener, Ordered {
 
@@ -74,6 +76,11 @@ public class EventPublishingRunListener implements SpringApplicationRunListener,
 		this.initialMulticaster.multicastEvent(new ApplicationStartingEvent(this.application, this.args));
 	}
 
+	/**
+	 * 环境信息准备好事件触发
+	 * @param environment the environment
+	 *
+	 */
 	@Override
 	public void environmentPrepared(ConfigurableEnvironment environment) {
 		this.initialMulticaster

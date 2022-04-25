@@ -26,10 +26,15 @@ import org.springframework.core.env.Environment;
  *
  * @author Dave Syer
  * @since 1.0.0
+ *
+ * {@link SpringApplication} 启动并且 {@link Environment} 环境准备好事件
  */
 @SuppressWarnings("serial")
 public class ApplicationEnvironmentPreparedEvent extends SpringApplicationEvent {
 
+	/**
+	 * 环境信息
+	 */
 	private final ConfigurableEnvironment environment;
 
 	/**
